@@ -6,19 +6,88 @@ from datetime import date
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Gerador de Parecer - Aditivos", page_icon="⚖️", layout="wide")
 
-# --- ESTILIZAÇÃO CSS (DARK NEON) ---
+# --- ESTILIZAÇÃO CSS (CORRIGIDA) ---
 page_bg_img = """
 <style>
-    [data-testid="stApp"] { background-image: linear-gradient(rgb(2, 45, 44) 0%, rgb(0, 21, 21) 100%); background-attachment: fixed; }
-    [data-testid="stSidebar"] { background-color: rgba(2, 45, 44, 0.95); border-right: 1px solid rgba(255, 255, 255, 0.1); }
-    .stMarkdown, .stText, p, h1, h2, h3, h4, h5, h6, label, span, div[data-testid="stCaptionContainer"] { color: #e0e0e0 !important; }
-    div[data-testid="stTextInput"] input, div[data-testid="stNumberInput"] input, div[data-testid="stTextArea"] textarea, div[data-testid="stSelectbox"] > div > div { 
-        background-color: rgba(12, 19, 14, 0.5) !important; color: #e0e0e0 !important; border-radius: 1.5rem !important; border: 1px solid rgba(255, 255, 255, 0.2); padding-left: 1rem;
+    /* 1. FUNDO GERAL */
+    [data-testid="stApp"] {
+        background-image: linear-gradient(rgb(2, 45, 44) 0%, rgb(0, 21, 21) 100%);
+        background-attachment: fixed;
     }
-    div[data-testid="stButton"] > button { background-color: rgb(0, 80, 81) !important; color: #FFFFFF !important; border-radius: 4rem; font-weight: bold; border: none; transition: all 0.3s ease; }
-    div[data-testid="stButton"] > button:hover { transform: scale(1.02); box-shadow: 0 0 12px rgba(0, 80, 81, 0.8); }
-    div[data-testid="stDownloadButton"] > button { background-color: rgb(221, 79, 5) !important; color: #FFFFFF !important; border-radius: 4rem; border: none; }
-    footer {visibility: hidden;} .stDeployButton {display:none;}
+    
+    /* 2. SIDEBAR */
+    [data-testid="stSidebar"] {
+        background-color: rgba(2, 45, 44, 0.95);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* 3. LIMPEZA TOTAL DO TOPO (OPÇÃO NUCLEAR) */
+    header {visibility: hidden;}
+    #MainMenu {visibility: hidden;}
+    .stDeployButton {display:none;}
+    [data-testid="stStatusWidget"] {display:none;}
+    div[data-testid="stHeading"] a { display: none !important; }
+    
+    /* 4. TEXTOS CLAROS */
+    .stMarkdown, .stText, p, h1, h2, h3, h4, h5, h6, label, span, div[data-testid="stCaptionContainer"] {
+        color: #e0e0e0 !important;
+    }
+    
+    /* 5. CORREÇÃO DOS INPUTS (O PULO DO GATO) */
+    /* Remove fundo quadrado dos containers pais */
+    div[data-testid="stTextInput"] > div, 
+    div[data-testid="stNumberInput"] > div, 
+    div[data-testid="stTextArea"] > div,
+    div[data-baseweb="select"] > div {
+        background-color: transparent !important;
+        border: none !important;
+    }
+    
+    /* Aplica estilo arredondado APENAS no input real */
+    div[data-testid="stTextInput"] input, 
+    div[data-testid="stNumberInput"] input, 
+    div[data-testid="stTextArea"] textarea, 
+    div[data-testid="stSelectbox"] > div > div { 
+        background-color: rgba(12, 19, 14, 0.5) !important;
+        color: #e0e0e0 !important;
+        border-radius: 1.5rem !important; 
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        padding-left: 1rem;
+    }
+    
+    /* Foco nos inputs */
+    div[data-testid="stTextInput"] input:focus, 
+    div[data-testid="stTextArea"] textarea:focus {
+        border-color: rgb(221, 79, 5) !important;
+        box-shadow: 0 0 10px rgba(221, 79, 5, 0.2);
+    }
+
+    /* 6. BOTÕES NEON */
+    div[data-testid="stButton"] > button { 
+        background-color: rgb(0, 80, 81) !important; 
+        color: #FFFFFF !important; 
+        border-radius: 4rem; 
+        font-weight: bold;
+        border: none;
+        transition: all 0.3s ease;
+    }
+    div[data-testid="stButton"] > button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 0 12px rgba(0, 80, 81, 0.8);
+    }
+    
+    /* Botão de Download (Laranja) */
+    div[data-testid="stDownloadButton"] > button {
+        background-color: rgb(221, 79, 5) !important; 
+        color: #FFFFFF !important; 
+        border-radius: 4rem;
+        border: none;
+        color: white !important;
+    }
+    
+    /* 7. CHECKBOXES */
+    div[data-testid="stCheckbox"] label span { line-height: 1.5; }
+    
 </style>
 """
 st.markdown(page_bg_img, unsafe_allow_html=True)
@@ -34,10 +103,8 @@ with st.sidebar:
     is_prorrogacao = st.checkbox("Prorrogação (Extensão)", value=False)
     is_reajuste = st.checkbox("Reajuste (Índice)", value=False)
     is_repactuacao = st.checkbox("Repactuação (CCT)", value=False)
-    # NOVA OPÇÃO
     is_quantitativo = st.checkbox("Alteração Quantitativa (+/- Valor)", value=True)
     
-    # Flags para o Word
     dados['is_renovacao'] = is_renovacao
     dados['is_prorrogacao'] = is_prorrogacao
     dados['is_reajuste'] = is_reajuste
@@ -69,7 +136,7 @@ abas = ["📋 Dados Gerais"]
 if is_renovacao or is_prorrogacao: abas.append("⏳ Prazo")
 if is_reajuste: abas.append("📈 Reajuste")
 if is_repactuacao: abas.append("👷 Repactuação")
-if is_quantitativo: abas.append("🔢 Alt. Quantitativa") # Nova Aba
+if is_quantitativo: abas.append("🔢 Alt. Quantitativa")
 abas.append("✅ Conclusão")
 
 tabs = st.tabs(abas)
@@ -106,7 +173,7 @@ if "👷 Repactuação" in tab_map:
         dados['cct_numero'] = st.text_input("Nº CCT", placeholder="RJ000123/2024")
         dados['alteracoes_cct'] = st.text_area("Alterações Econômicas")
 
-# --- NOVA ABA: ALTERAÇÃO QUANTITATIVA ---
+# --- ABA: ALTERAÇÃO QUANTITATIVA ---
 if "🔢 Alt. Quantitativa" in tab_map:
     with tab_map["🔢 Alt. Quantitativa"]:
         st.subheader("Cálculo de Acréscimo e Supressão")
@@ -119,27 +186,23 @@ if "🔢 Alt. Quantitativa" in tab_map:
         acrescimo = col_q3.number_input("Valor a ACRESCER (R$)", min_value=0.0, format="%.2f")
         supressao = col_q4.number_input("Valor a SUPRIMIR (R$)", min_value=0.0, format="%.2f")
         
-        # Cálculos Automáticos
         if valor_atual > 0:
             perc_acrescimo = (acrescimo / valor_atual) * 100
             perc_supressao = (supressao / valor_atual) * 100
             novo_valor = valor_atual + acrescimo - supressao
             
-            # Exibição Visual (Metrics)
             col_m1, col_m2, col_m3 = st.columns(3)
             col_m1.metric("Novo Valor Global", f"R$ {novo_valor:,.2f}")
             col_m2.metric("% Acréscimo", f"{perc_acrescimo:.2f}%", delta_color="inverse" if perc_acrescimo > 25 else "normal")
             col_m3.metric("% Supressão", f"{perc_supressao:.2f}%")
             
-            # Validação Legal (Limite de 25%)
             if perc_acrescimo > 25:
-                st.error(f"🚨 ATENÇÃO: O acréscimo de {perc_acrescimo:.2f}% extrapola o limite legal de 25% (Lei 13.303/16)!")
+                st.error(f"🚨 ATENÇÃO: O acréscimo de {perc_acrescimo:.2f}% extrapola o limite legal de 25%!")
                 aviso_legal = "O acréscimo extrapola o limite legal de 25%, exigindo justificativa excepcionalíssima."
             else:
-                st.success("✅ Percentuais dentro do limite legal (Art. 81, Lei 13.303).")
+                st.success("✅ Percentuais dentro do limite legal.")
                 aviso_legal = "A alteração respeita o limite legal de 25% do valor inicial atualizado."
 
-            # Texto Gerado Automaticamente
             texto_quant = (f"O presente aditivo tem por objeto a alteração quantitativa do contrato. "
                            f"O valor inicial atualizado base é de R$ {valor_atual:,.2f}. "
                            f"Será realizado um acréscimo de R$ {acrescimo:,.2f} ({perc_acrescimo:.2f}%) "
