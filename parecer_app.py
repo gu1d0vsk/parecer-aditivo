@@ -6,7 +6,7 @@ from datetime import date
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Gerador de Parecer - Aditivos", page_icon="⚖️", layout="wide")
 
-# --- ESTILIZAÇÃO CSS (CORRIGIDA) ---
+# --- ESTILIZAÇÃO CSS (AGORA VAI! 🎯) ---
 page_bg_img = """
 <style>
     /* 1. FUNDO GERAL */
@@ -21,7 +21,7 @@ page_bg_img = """
         border-right: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    /* 3. LIMPEZA TOTAL DO TOPO (OPÇÃO NUCLEAR) */
+    /* 3. REMOÇÃO DE ELEMENTOS DO TOPO (NUCLEAR) */
     header {visibility: hidden;}
     #MainMenu {visibility: hidden;}
     .stDeployButton {display:none;}
@@ -33,33 +33,40 @@ page_bg_img = """
         color: #e0e0e0 !important;
     }
     
-    /* 5. CORREÇÃO DOS INPUTS (O PULO DO GATO) */
-    /* Remove fundo quadrado dos containers pais */
-    div[data-testid="stTextInput"] > div, 
-    div[data-testid="stNumberInput"] > div, 
-    div[data-testid="stTextArea"] > div,
-    div[data-baseweb="select"] > div {
+    /* 5. CORREÇÃO DOS INPUTS (SOLUÇÃO DEFINITIVA) */
+    
+    /* Passo A: Remove o fundo retangular dos containers do Streamlit */
+    div[data-baseweb="input"], 
+    div[data-baseweb="base-input"], 
+    div[data-baseweb="select"] > div,
+    div[data-testid="stNumberInput"] div[data-baseweb="input"] {
         background-color: transparent !important;
         border: none !important;
     }
-    
-    /* Aplica estilo arredondado APENAS no input real */
+
+    /* Passo B: Estiliza APENAS a caixa de digitação (arredondada) */
     div[data-testid="stTextInput"] input, 
     div[data-testid="stNumberInput"] input, 
-    div[data-testid="stTextArea"] textarea, 
-    div[data-testid="stSelectbox"] > div > div { 
-        background-color: rgba(12, 19, 14, 0.5) !important;
+    div[data-testid="stTextArea"] textarea,
+    div[data-baseweb="select"] > div > div { 
+        background-color: rgba(12, 19, 14, 0.5) !important; /* Cor do fundo do input */
         color: #e0e0e0 !important;
         border-radius: 1.5rem !important; 
         border: 1px solid rgba(255, 255, 255, 0.2) !important;
-        padding-left: 1rem;
+        padding-left: 1rem !important;
     }
-    
-    /* Foco nos inputs */
+
+    /* Foco (Quando clica) */
     div[data-testid="stTextInput"] input:focus, 
+    div[data-testid="stNumberInput"] input:focus,
     div[data-testid="stTextArea"] textarea:focus {
         border-color: rgb(221, 79, 5) !important;
         box-shadow: 0 0 10px rgba(221, 79, 5, 0.2);
+    }
+    
+    /* Ajuste específico para Selectbox (o texto dentro dele) */
+    div[data-baseweb="select"] div {
+        color: #e0e0e0 !important;
     }
 
     /* 6. BOTÕES NEON */
