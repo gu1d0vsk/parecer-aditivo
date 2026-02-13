@@ -3,12 +3,12 @@ from docxtpl import DocxTemplate
 from io import BytesIO
 
 # Importando os módulos que criamos
-import modulos/analista
-import modulos/cabecalho
-import modulos/prazo
-import modulos/financeiro
-import modulos/quantitativo
-import modulos/conclusao
+from modulos import analista
+from modulos import cabecalho
+from modulos import prazo
+from modulos import financeiro
+from modulos import quantitativo
+from modulos import conclusao
 
 # --- CONFIGURAÇÃO DA PÁGINA ---
 st.set_page_config(page_title="Gerador de Parecer - Aditivos", page_icon="⚖️", layout="wide")
