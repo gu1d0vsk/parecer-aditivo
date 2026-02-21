@@ -34,7 +34,7 @@ st.markdown("""
         border: none !important; 
     }
 
-    /* 3. FORÇAR LARGURA 75% E CENTRALIZAR (Fim do visual esticado) */
+    /* 3. FORÇAR LARGURA 75% E CENTRALIZAR */
     .main .block-container, [data-testid="block-container"] {
         max-width: 75% !important; 
         padding-top: 3rem !important;
@@ -54,18 +54,20 @@ st.markdown("""
         margin: 0px !important;
     }
     
-    /* 4. TEXTOS E TÍTULOS (Tamanho ajustado) */
+    /* 4. TEXTOS E TÍTULOS */
     .stMarkdown, .stText, p, label, span, div[data-testid="stCaptionContainer"], li { 
         color: #e8e8e8 !important; 
         font-size: 1.15rem !important; 
     }
-    /* Garantindo que o Título Principal fique BEM grande */
     h1 { font-size: 3rem !important; font-weight: bold !important; color: #ffffff !important; }
     h2 { font-size: 2.2rem !important; }
     h3 { font-size: 1.8rem !important; }
     
-    /* 5. CORREÇÃO DA BORDA DUPLA NOS INPUTS E TEXTAREAS */
-    /* Deixa as caixas externas do Streamlit 100% transparentes */
+    /* 5. CORREÇÃO DA BORDA DUPLA À PROVA DE BALAS */
+    /* Ataca todas as camadas ocultas do Streamlit para deixá-las invisíveis */
+    div[data-testid="stTextInput"] > div,
+    div[data-testid="stNumberInput"] > div,
+    div[data-testid="stTextArea"] > div,
     div[data-baseweb="base-input"], 
     div[data-baseweb="input"], 
     div[data-baseweb="textarea"],
@@ -75,12 +77,12 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* Pinta apenas a tag nativa de texto do HTML, matando o bug da borda quadrada */
+    /* Aplica o estilo apenas na caixa nativa do HTML */
     input[type="text"], input[type="number"], textarea {
         background-color: rgba(0, 0, 0, 0.4) !important;
         color: #ffffff !important;
         border-radius: 1.5rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.05) !important; /* Borda quase invisível só pra dar forma */
+        border: 1px solid rgba(255, 255, 255, 0.05) !important; 
         padding: 0.8rem 1.5rem !important;
         font-size: 1.15rem !important;
         outline: none !important;
@@ -88,7 +90,6 @@ st.markdown("""
         box-shadow: none !important;
     }
     
-    /* Textarea com borda levemente menor por causa da barra de rolagem */
     textarea {
         border-radius: 1rem !important; 
         padding-top: 1rem !important;
@@ -99,7 +100,7 @@ st.markdown("""
         border: 1px solid rgb(0, 150, 151) !important;
     }
 
-    /* Correção do Select Box (Dropdown) */
+    /* Select Box (Dropdown) */
     div[data-baseweb="select"] > div { 
         background-color: rgba(0, 0, 0, 0.4) !important; 
         border-radius: 1.5rem !important; 
@@ -237,3 +238,21 @@ col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if st.button("🚀 Gerar Documento do Parecer", use_container_width=True):
         try:
+            doc = DocxTemplate("modelo_parecer.docx")
+            doc.render(dados)
+            
+            buffer = BytesIO()
+            doc.save(buffer)
+            buffer.seek(0)
+            
+            st.success("✨ Parecer estruturado com sucesso!")
+            st.download_button(
+                label="📥 Baixar Parecer (.docx)",
+                data=buffer,
+                file_name=f"Parecer_{dados.get('num_contrato', 'S/N')}.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True
+            )
+        except Exception as e:
+            st.error(f"Erro ao gerar documento: {e}")
+            st.warning("Verifique se o arquivo 'modelo_parecer.docx' está na mesma pasta e se as tags coincidem.")
