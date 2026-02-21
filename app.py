@@ -34,9 +34,11 @@ st.markdown("""
         border: none !important; 
     }
 
-    /* 3. LARGURA DA PÁGINA (Limita a 75% e centraliza) */
-    .main .block-container, [data-testid="block-container"] {
-        max-width: 75% !important; 
+    /* 3. LARGURA DA PÁGINA (Limita a 70% e centraliza) */
+    .main .block-container, [data-testid="block-container"], [data-testid="stAppViewBlockContainer"] {
+        max-width: 70% !important; 
+        margin-left: auto !important;
+        margin-right: auto !important;
         padding-top: 3rem !important;
         padding-bottom: 3rem !important;
     }
