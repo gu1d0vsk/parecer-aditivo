@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CSS (Identidade Visual Melhorada - Ampliada e Arredondada) ---
+# --- CSS (Identidade Visual Moderna e Centralizada) ---
 st.markdown("""
 <style>
     /* 1. FUNDO GERAL */
@@ -27,52 +27,96 @@ st.markdown("""
         background-attachment: fixed; 
     }
     
-    /* 2. SIDEBAR - Sem borda de separação */
+    /* 2. SIDEBAR - Transparente e sem borda */
     [data-testid="stSidebar"] { 
-        background-color: rgba(2, 45, 44, 0.7); 
+        background-color: rgba(2, 45, 44, 0.7) !important; 
         backdrop-filter: blur(10px);
-        border: none !important; /* Removendo o traço fino */
+        border: none !important; 
     }
 
-    /* 3. LIMPEZA DA BARRA SUPERIOR */
+    /* 3. LARGURA DA PÁGINA E LIMPEZA GERAL */
+    /* Limita a largura a 75% e centraliza, tirando a cara de site de 2000 */
+    [data-testid="block-container"] {
+        max-width: 75% !important;
+        padding-top: 2rem !important;
+    }
     .stDeployButton {display:none;} 
     #MainMenu {visibility: hidden;} 
     [data-testid="stHeader"] { background-color: transparent; }
     
-    /* 4. AUMENTO GERAL DE TEXTOS (Simulando Zoom 120%) */
+    /* MATAR TODAS AS LINHAS DIVISÓRIAS (<hr>) DO STREAMLIT */
+    hr {
+        border: none !important;
+        background-color: transparent !important;
+        height: 0px !important;
+        margin: 0px !important;
+    }
+    
+    /* 4. AUMENTO GERAL DE TEXTOS (Zoom 120%) */
     .stMarkdown, .stText, p, label, span, div[data-testid="stCaptionContainer"], li { 
         color: #e8e8e8 !important; 
-        font-size: 1.15rem !important; /* Aumento da fonte base */
+        font-size: 1.15rem !important; 
     }
     h1 { font-size: 2.8rem !important; }
     h2 { font-size: 2.2rem !important; }
     h3 { font-size: 1.8rem !important; }
     
-    /* 5. INPUTS - Sem bordas, bem arredondados e maiores */
-    div[data-baseweb="input"], div[data-baseweb="base-input"], div[data-baseweb="select"] > div { 
-        background-color: transparent !important; 
-        border: none !important; 
+    /* 5. CORREÇÃO DOS INPUTS E TEXTAREAS (Fim da borda dupla) */
+    /* Deixa todos os wrappers originais do Streamlit transparentes e sem borda */
+    div[data-baseweb="base-input"], 
+    div[data-baseweb="input"], 
+    div[data-baseweb="textarea"] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }
-    div[data-testid="stTextInput"] input, div[data-testid="stNumberInput"] input, div[data-testid="stTextArea"] textarea, div[data-baseweb="select"] > div > div { 
-        background-color: rgba(0, 0, 0, 0.3) !important; 
-        color: #ffffff !important; 
-        border-radius: 1.5rem !important; /* Bordas bem arredondadas */
-        border: none !important; /* Sem traços */
-        padding: 0.8rem 1.5rem !important; /* Mais altura e espaço interno */
-        font-size: 1.15rem !important; /* Texto interno maior */
-        box-shadow: inset 0 2px 5px rgba(0,0,0,0.2); /* Sombra interna para dar profundidade já que não tem borda */
+
+    /* Aplica o estilo DIRETAMENTE no elemento HTML (input/textarea) */
+    input, textarea {
+        background-color: rgba(0, 0, 0, 0.3) !important;
+        color: #ffffff !important;
+        border-radius: 1.5rem !important;
+        border: none !important;
+        padding: 0.8rem 1.5rem !important;
+        font-size: 1.15rem !important;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.2) !important;
+        outline: none !important;
+        width: 100% !important;
     }
-    div[data-testid="stTextInput"] input:focus, div[data-testid="stNumberInput"] input:focus {
+    
+    /* Textarea com borda levemente menor para o scrollbar não ficar feio */
+    textarea {
+        border-radius: 1rem !important; 
+        padding-top: 1rem !important;
+    }
+
+    input:focus, textarea:focus {
         background-color: rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Conserto específico para o Select Box (Dropdown) */
+    div[data-baseweb="select"] > div { 
+        background-color: rgba(0, 0, 0, 0.3) !important; 
+        border-radius: 1.5rem !important; 
+        border: none !important;
+        padding: 0.2rem 1rem !important;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.2) !important;
     }
     div[data-baseweb="select"] div { color: #e0e0e0 !important; font-size: 1.15rem !important; }
 
-    /* 6. ESTILIZAÇÃO DAS ABAS (TABS) - Formato Pílula sem linhas base */
+    /* 6. ESTILIZAÇÃO DAS ABAS (TABS) - Sem a linha vermelha nativa */
+    div[data-testid="stTabs"] [data-baseweb="tab-list"] {
+        border-bottom: none !important; /* Mata a linha guia cinza */
+        gap: 0.5rem; /* Espaço entre as abas */
+    }
+    div[data-testid="stTabs"] [data-baseweb="tab-highlight"] {
+        display: none !important; /* Mata a linha vermelha que se move */
+    }
     div[data-testid="stTabs"] button {
         background-color: rgba(0, 0, 0, 0.3) !important;
-        border: none !important; /* Sem linha fina embaixo */
-        border-radius: 2rem !important; /* Formato de pílula arredondada */
-        margin-right: 0.8rem;
+        border: none !important; 
+        border-radius: 2rem !important; 
+        margin-right: 0.5rem;
         padding: 0.6rem 1.5rem !important;
         font-size: 1.15rem !important;
         transition: background-color 0.3s ease;
@@ -83,14 +127,14 @@ st.markdown("""
         font-weight: bold;
     }
 
-    /* 7. BOTÕES - Maiores e mais arredondados */
+    /* 7. BOTÕES GERAIS */
     div[data-testid="stButton"] > button { 
         background-color: rgb(0, 80, 81) !important; 
         color: #FFFFFF !important; 
-        border-radius: 2rem !important; /* Bordas máximas */
-        border: none !important; /* Sem traços */
+        border-radius: 2rem !important; 
+        border: none !important; 
         font-weight: bold; 
-        padding: 1rem 2rem !important; /* Botão mais gordinho e clicável */
+        padding: 1rem 2rem !important; 
         font-size: 1.2rem !important;
         transition: all 0.2s ease-in-out;
     }
@@ -124,7 +168,6 @@ with st.sidebar:
     st.title("⚙️ Configuração")
     st.markdown("Selecione os escopos do aditivo para montar as seções do parecer:")
     
-    # Flags de controle de fluxo (Espaçadas naturalmente, sem st.divider)
     st.write("") 
     dados['is_renovacao'] = st.checkbox("⏳ Renovação (Prazo)", value=True)
     dados['is_prorrogacao'] = st.checkbox("📅 Prorrogação (Extensão)", value=False)
@@ -132,7 +175,7 @@ with st.sidebar:
     dados['is_repactuacao'] = st.checkbox("👷 Repactuação (CCT)", value=False)
     dados['is_quantitativo'] = st.checkbox("🔢 Alteração Quantitativa", value=False)
     
-    st.write("") # Espaço em branco no lugar de linha de divisão
+    st.write("") 
     
     # Chama o módulo do Analista
     analista.render_analista_sidebar(dados)
@@ -140,12 +183,11 @@ with st.sidebar:
 # --- CABEÇALHO (Dados do Contrato) ---
 st.title("⚖️ Gerador de Parecer Técnico")
 st.markdown("Preencha as informações abaixo para estruturar a minuta do parecer.")
-st.write("") # Espaço em branco
+st.write("") 
 cabecalho.render_cabecalho(dados)
-st.write("") # Espaço em branco
+st.write("") 
 
 # --- ABAS DINÂMICAS ---
-# Monta a lista de abas necessárias baseado nos checkboxes
 lista_abas = []
 if dados['is_renovacao'] or dados['is_prorrogacao']: lista_abas.append("⏳ Prazo")
 if dados['is_reajuste']: lista_abas.append("📈 Reajuste")
@@ -153,15 +195,13 @@ if dados['is_repactuacao']: lista_abas.append("👷 Repactuação")
 if dados['is_quantitativo']: lista_abas.append("🔢 Alt. Quantitativa")
 lista_abas.append("✅ Conclusão")
 
-# Cria as abas no Streamlit apenas se houver abas para mostrar
 if lista_abas:
     tabs = st.tabs(lista_abas)
     tab_map = dict(zip(lista_abas, tabs))
 
-    # --- RENDERIZAÇÃO DOS MÓDULOS NAS ABAS ---
     if "⏳ Prazo" in tab_map:
         with tab_map["⏳ Prazo"]:
-            st.write("") # Respiro superior
+            st.write("") 
             prazo.render_prazo(dados)
 
     if "📈 Reajuste" in tab_map:
@@ -187,19 +227,15 @@ else:
 
 # --- GERAÇÃO DO ARQUIVO ---
 st.write("")
-st.write("") # Criando um bom espaço antes do botão em vez de uma linha fina
+st.write("")
 
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
     if st.button("🚀 Gerar Documento do Parecer", use_container_width=True):
         try:
-            # Carrega o modelo
             doc = DocxTemplate("modelo_parecer.docx")
-            
-            # Renderiza
             doc.render(dados)
             
-            # Salva em memória
             buffer = BytesIO()
             doc.save(buffer)
             buffer.seek(0)
