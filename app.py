@@ -18,7 +18,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CSS (Design Moderno, Centralizado e Sem Bordas Duplas) ---
+# --- CSS (Design Moderno, Títulos Corrigidos e Sem Bordas Duplas) ---
 st.markdown("""
 <style>
     /* 1. FUNDO GERAL */
@@ -34,7 +34,7 @@ st.markdown("""
         border: none !important; 
     }
 
-    /* 3. FORÇAR LARGURA 75% E CENTRALIZAR */
+    /* 3. LARGURA DA PÁGINA (Limita a 75% e centraliza) */
     .main .block-container, [data-testid="block-container"] {
         max-width: 75% !important; 
         padding-top: 3rem !important;
@@ -45,8 +45,6 @@ st.markdown("""
     .stDeployButton {display:none;} 
     #MainMenu {visibility: hidden;} 
     [data-testid="stHeader"] { background-color: transparent; }
-    
-    /* MATAR TODAS AS LINHAS DIVISÓRIAS (<hr>) DO STREAMLIT */
     hr {
         border: none !important;
         background-color: transparent !important;
@@ -54,31 +52,40 @@ st.markdown("""
         margin: 0px !important;
     }
     
-    /* 4. TEXTOS E TÍTULOS */
-    .stMarkdown, .stText, p, label, span, div[data-testid="stCaptionContainer"], li { 
+    /* 4. TEXTOS BASE E TÍTULOS (Correção do bug do Span) */
+    /* Aplica fonte 1.15 só em textos comuns, não em spans gerais para não quebrar títulos */
+    p, label, div[data-testid="stCaptionContainer"], li { 
         color: #e8e8e8 !important; 
         font-size: 1.15rem !important; 
     }
-    h1 { font-size: 3rem !important; font-weight: bold !important; color: #ffffff !important; }
-    h2 { font-size: 2.2rem !important; }
-    h3 { font-size: 1.8rem !important; }
     
-    /* 5. CORREÇÃO DA BORDA DUPLA À PROVA DE BALAS */
-    /* Ataca todas as camadas ocultas do Streamlit para deixá-las invisíveis */
-    div[data-testid="stTextInput"] > div,
-    div[data-testid="stNumberInput"] > div,
-    div[data-testid="stTextArea"] > div,
-    div[data-baseweb="base-input"], 
-    div[data-baseweb="input"], 
-    div[data-baseweb="textarea"],
-    div[data-baseweb="textarea"] > div {
+    /* Títulos da Área Principal (Gigantes e Imponentes) */
+    .main h1, .main h1 span { 
+        font-size: 3rem !important; 
+        font-weight: bold !important; 
+        color: #ffffff !important; 
+    }
+    .main h2, .main h2 span { font-size: 2.2rem !important; }
+    .main h3, .main h3 span { font-size: 1.8rem !important; }
+    
+    /* Título da Sidebar (Menor para caber "Configuração" numa linha só) */
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h1 span {
+        font-size: 2rem !important;
+    }
+    
+    /* 5. CORREÇÃO DEFINITIVA DAS BORDAS DUPLAS NOS INPUTS */
+    /* Deixa TODAS as caixas pai (wrappers) invisíveis */
+    div[data-testid="stTextInput"] div,
+    div[data-testid="stNumberInput"] div,
+    div[data-testid="stTextArea"] div,
+    div[data-baseweb="select"] div {
         background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
 
-    /* Aplica o estilo apenas na caixa nativa do HTML */
-    input[type="text"], input[type="number"], textarea {
+    /* Aplica a cor e borda APENAS onde você de fato digita ou seleciona */
+    input[type="text"], input[type="number"], textarea, div[data-baseweb="select"] > div {
         background-color: rgba(0, 0, 0, 0.4) !important;
         color: #ffffff !important;
         border-radius: 1.5rem !important;
@@ -87,27 +94,22 @@ st.markdown("""
         font-size: 1.15rem !important;
         outline: none !important;
         width: 100% !important;
-        box-shadow: none !important;
     }
     
+    /* Ajuste fino para a caixa grande (Textarea) e Select */
     textarea {
         border-radius: 1rem !important; 
         padding-top: 1rem !important;
     }
+    div[data-baseweb="select"] div { 
+        color: #ffffff !important; 
+    }
 
+    /* Efeito de Foco (Ao clicar no input) */
     input:focus, textarea:focus {
         background-color: rgba(0, 0, 0, 0.6) !important;
         border: 1px solid rgb(0, 150, 151) !important;
     }
-
-    /* Select Box (Dropdown) */
-    div[data-baseweb="select"] > div { 
-        background-color: rgba(0, 0, 0, 0.4) !important; 
-        border-radius: 1.5rem !important; 
-        border: none !important;
-        padding: 0.2rem 1rem !important;
-    }
-    div[data-baseweb="select"] div { color: #e0e0e0 !important; font-size: 1.15rem !important; }
 
     /* 6. ESTILIZAÇÃO DAS ABAS (TABS) */
     div[data-testid="stTabs"] [data-baseweb="tab-list"] {
