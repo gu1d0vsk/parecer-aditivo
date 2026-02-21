@@ -14,7 +14,7 @@ from modulos import conclusao
 st.set_page_config(
     page_title="Gerador de Parecer - Aditivos", 
     page_icon="⚖️", 
-    layout="wide",
+    layout="centered",
     initial_sidebar_state="expanded"
 )
 
